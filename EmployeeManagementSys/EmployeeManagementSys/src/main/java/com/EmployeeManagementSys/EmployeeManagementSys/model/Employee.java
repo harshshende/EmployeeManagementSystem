@@ -3,14 +3,13 @@ package com.EmployeeManagementSys.EmployeeManagementSys.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.annotations.Cascade;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +19,7 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Table(name = "employee")
+
 public class Employee implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,17 +29,25 @@ public class Employee implements UserDetails {
     @NotEmpty(message = "Name Should not be empty")
     private String name;
 
+
+    @Column(unique = true)
+
     @NotEmpty(message = "Email Should not be empty")
-    @Column(nullable = false)
     @Email(message = "Invalid Email")
     private String email;
 
     @Column(nullable = false)
     @NotEmpty(message = "Password Should not be empty")
-
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}", message = "Invalid Password")
     private  String password;
 
+    @Column(nullable = false)
+    @NotNull(message = "Salary Should not be null")
+    @Min(value = 5000, message = "Salary should not be less Than 5000")
+    private int salary;
+
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "organization_id")
     private Organization organization;
 
@@ -118,6 +126,10 @@ public class Employee implements UserDetails {
         return true;
     }
 
+
+    public void assignRole(Role roles) {
+        this.roles = (Set<Role>) roles;
+    }
 
 }
 

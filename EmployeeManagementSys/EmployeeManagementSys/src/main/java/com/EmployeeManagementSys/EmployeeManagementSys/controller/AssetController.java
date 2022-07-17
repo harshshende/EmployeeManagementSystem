@@ -41,7 +41,7 @@ public class AssetController {
         return assetService.getAllAsset();
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Assets> getEmployeeById(@PathVariable("id") long id){
         return new ResponseEntity<Assets>(assetService.getByAssetId(id), HttpStatus.OK);
     }

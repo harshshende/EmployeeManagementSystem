@@ -5,6 +5,8 @@ import com.EmployeeManagementSys.EmployeeManagementSys.model.Employee;
 import com.EmployeeManagementSys.EmployeeManagementSys.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +24,14 @@ public class EmployeeServiceImpl implements EmployeeService{
     public Employee saveEmployee(Employee employee) {
         String encodedPassword = passwordEncoder.encode(employee.getPassword());
         employee.setPassword(encodedPassword);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return employeeRepository.save(employee);
     }
 
     @Override
     public Employee updateEmployee(Employee employee) {
+        String encodedPassword = passwordEncoder.encode(employee.getPassword());
+        employee.setPassword(encodedPassword);
         return employeeRepository.save(employee);
     }
 
